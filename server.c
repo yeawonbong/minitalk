@@ -1,12 +1,30 @@
 #include "minitalk.h"
 
+void write_char()
+{
+
+}
+
+void	write_str()
+{
+	ft_putstr_fd("client pid : ", STDOUT_FILENO);
+
+}
+
 int	main(void)
 {
 	int	pid;
+	char	*c;
+	struct sigaction sig1;
+	struct sigaction sig2;
 
+	sig1.sa_handler = &write_str;
 	ft_putstr_fd("server pid : ", STDOUT_FILENO);
 	ft_putnbr_fd(pid = getpid(), STDOUT_FILENO);
 	ft_putstr_fd("\n", STDOUT_FILENO);
+	// while ()
+	sigaction(SIGUSR1, sig1, 0);
+
 	while (1)
 	{
 	}
