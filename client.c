@@ -11,6 +11,6 @@ int main(int argc, char *argv[])
 	cpid = getpid();
 	kill(ft_atoi(argv[1]), SIGUSR1);
 	printf("my pid : %d\n", cpid);
-	printf("binary in bit : %d\n", cpid | 0);
+	printf("binary in bit : %d\n", cpid & 1);
 	return(0);
 }
