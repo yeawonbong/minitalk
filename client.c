@@ -2,7 +2,7 @@
 
 int main(int argc, char *argv[])
 {
-	int spid;
+	// int spid;
 	int cpid;
 
 	// spid = atoi(argv[1];
