@@ -24,14 +24,13 @@ int	main(void)
 	ft_putnbr_fd(pid = getpid(), STDOUT_FILENO);
 	ft_putstr_fd("\n", STDOUT_FILENO);
 	// sigaction(SIGUSR1, &sig1, 0);
-	while (1)
-	{
-	}
 	if (sigaction(SIGUSR1, &sig1, 0) == -1)
 	{
 		printf("signal(SIGUSR1) Error\n");
 		return -1;
 	}
-
+	while (1)
+	{
+	}
 }
 
