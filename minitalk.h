@@ -12,10 +12,10 @@
 # include <unistd.h>
 # include <signal.h>
 
-// typedef struct s_sigaction
-// {
-// 	void		(*sa_handler)(int);
-// 	sigset_t	sa_mask;
-// 	int			sa_flags;
-// }				t_sigaction;
+typedef struct s_minitalk
+{
+	int	spid;
+	int	cpid;
+	
+}				t_minitalk;
 #endif

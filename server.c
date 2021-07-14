@@ -5,7 +5,7 @@
 
 // }
 
-void	write_str(int i)
+void	write_str(int i, siginfo_t siginfo) //매개변수 int 외에 안받아진다. 일단 save
 {
 	printf("I GOT SIGUSR1! \n");
 	i = 0;
@@ -32,7 +32,6 @@ int	main(void)
 		return -1;
 	}
 	else
-		printf("d\n", sig1.sa_flags.si_pid);
 	// ft_putstr_fd(ft_itoa(sig1.sa_flags.si_pid), STDOUT_FILENO);
 	while (1)
 	{
