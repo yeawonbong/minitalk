@@ -5,7 +5,11 @@
 
 // }
 
+<<<<<<< HEAD
 void	write_str(int signo, siginfo_t *siginfo, void *hmm)
+=======
+void	write_str(int i, siginfo_t siginfo) //매개변수 int 외에 안받아진다. 일단 save
+>>>>>>> b909f9d4b50f259c99cc6b6e15ef0ef5272660b7
 {
 	printf("I GOT SIGUSR1!\n");
 	ft_putstr_fd("client pid : ", STDOUT_FILENO);
@@ -33,7 +37,10 @@ int	main(void)
 		return -1;
 	}
 	else
+<<<<<<< HEAD
 		// printf("d\n", sig1.sa_flags.si_pid);
+=======
+>>>>>>> b909f9d4b50f259c99cc6b6e15ef0ef5272660b7
 	// ft_putstr_fd(ft_itoa(sig1.sa_flags.si_pid), STDOUT_FILENO);
 	while (1)
 	{
