@@ -23,7 +23,7 @@ void	send_number(int spid, int num)
 	{
 		if (num & 1)
 		{
-			kill(spid, SIGUSR2);
+			//kill(spid, SIGUSR2);
 			printf("SENT 1\n");
 		}
 		else
