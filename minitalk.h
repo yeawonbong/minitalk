@@ -12,6 +12,9 @@
 # include <unistd.h>
 # include <signal.h>
 
+# define SIG1 30
+# define SIG2 31
+
 typedef struct s_minitalk
 {
 	int	spid;

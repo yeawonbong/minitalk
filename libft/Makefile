@@ -6,7 +6,7 @@
 #    By: ybong <ybong@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/28 00:12:32 by ybong             #+#    #+#              #
-#    Updated: 2021/07/04 20:57:19 by ybong            ###   ########.fr        #
+#    Updated: 2021/07/17 00:54:19 by ybong            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -61,7 +61,7 @@ str_functions/ft_strtrim.c
 
 
 CC = gcc
-CFLAGES = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror
 AR = ar rcs
 NAME = libft.a
 OBJ = $(SRC:.c=.o)
@@ -73,7 +73,7 @@ $(NAME) : $(OBJ)
 	$(AR) $@ $(OBJ)
 
 %.o:%.c
-	$(CC) $(CFLAGES) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean :
 	rm -f ./isto_functions/*.o
