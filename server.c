@@ -2,27 +2,29 @@
 
 static int	g_currclient;
 
-void	sa_get_sig(int signo, siginfo_t *siginfo, void *none)
+void	ft_get_sig(int signo, siginfo_t *siginfo, void *none)
 {printf("[----IN_GETSIG]\n");
 	if (signo == SIG1)
 	{
 		printf("GOT SIGUSR1!\nSIGNO : %d\n", signo);
 	}
-	else
+	else if (signo == SIG2)
 		printf("GOT SIGUSR2!\nSIGNO : %d\n", signo);
-	kill(siginfo->si_pid, SIGUSR1);
+	// kill(siginfo->si_pid, SIGUSR1);
 
 printf("[--EXIT_GETSIG]\n");
 	return ;
 }
 
-void	sa_connect(int signo, siginfo_t *siginfo, void *hmm)
+void	ft_connect(int signo, siginfo_t *siginfo, void *none)
 {
-	printf("IN\n");
+	printf("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡINㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n");
 
-	int	cpid;
-
-	g_currclient = siginfo->si_pid;
+	printf("!!!!!!!!!si_pid : %d\n", siginfo->si_pid);
+	if (!g_currclient)
+	{
+		g_currclient = siginfo->si_pid;
+	}
 	printf("---currclient: %d\n---Client is : %d\n", g_currclient, siginfo->si_pid);
 	// if (g_currclient != siginfo->si_pid)
 	// {
@@ -30,44 +32,53 @@ void	sa_connect(int signo, siginfo_t *siginfo, void *hmm)
 	// 	g_currclient = 0;
 	// 	return;
 	// }
-	cpid = siginfo->si_pid;
-	static struct sigaction get_sig;
-	get_sig.sa_sigaction = sa_get_sig;
-	get_sig.sa_flags = SA_SIGINFO;
-	ft_putstr_fd("Successfully Connected!\n> Client PID : ", STDOUT_FILENO);
-	ft_putnbr_fd(siginfo->si_pid, STDOUT_FILENO);
-	ft_putchar_fd('\n', STDOUT_FILENO);
-	kill(siginfo->si_pid, SIGUSR1);
+	// static struct sigaction get_sig;
+	// get_sig.sa_sigaction = ft_get_sig;
+	// get_sig.sa_flags = SA_SIGINFO;
+	if (siginfo->si_pid != g_currclient)
+	{
+		ft_putstr_fd("Successfully Connected!\n> Client PID : ", STDOUT_FILENO);
+		ft_putnbr_fd(siginfo->si_pid, STDOUT_FILENO);
+		ft_putchar_fd('\n', STDOUT_FILENO);
+	}
+	ft_get_sig(signo, siginfo, none);
+	// kill(siginfo->si_pid, SIGUSR1);
 	// sigaction(SIGUSR1, &get_sig, 0);
 	// sigaction(SIGUSR2, &get_sig, 0);
-	printf("IN CONNECT SIGNO : %d\n", signo);
-	if (sigaction(SIGUSR1, &get_sig, 0) == -1 || sigaction(SIGUSR2, &get_sig, 0) == -1) //어느것이든 일단 들어간다. 
-	{
-		printf("signal(SIGUSR1) Error\n");
-		return ;
-	}
+	printf("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡOUT : %dㅡㅡㅡㅡㅡㅡ\n", signo);
+	// pause();
+	// if (sigaction(SIGUSR1, &get_sig, 0) == -1 || sigaction(SIGUSR2, &get_sig, 0) == -1) //어느것이든 일단 들어간다. 
+	// {
+	// 	printf("signal(SIGUSR1) Error\n");
+	// 	return ;
+	// }
 	return ;
+}
+
+void	ft_launch()
+{
+	ft_putstr_fd("Server Launched! PID : ", STDOUT_FILENO);
+	ft_putnbr_fd(getpid(), STDOUT_FILENO);
+	ft_putstr_fd("\n", STDOUT_FILENO);
 }
 
 int	main(void)
 {
-	int	pid;
-	static int	currclient =50;
+	// static int	currclient =50;
 	// char	*c;
 	struct sigaction connect; //static? 
 	// struct sigaction sig2;
 
-	connect.sa_sigaction = sa_connect;
+	connect.sa_sigaction = ft_connect;
 	connect.sa_flags = SA_SIGINFO;
-	ft_putstr_fd("Server Launched! PID : ", STDOUT_FILENO);
-	ft_putnbr_fd(pid = getpid(), STDOUT_FILENO);
-	ft_putstr_fd("\n", STDOUT_FILENO);
-	// sigaction(SIGUSR2, &connect, 0);
-	if (sigaction(SIGUSR1, &connect, 0) == -1 || sigaction(SIGUSR2, &connect, 0) == -1) //어느것이든 일단 들어간다. 
-	{
-		printf("signal(SIGUSR1) Error\n");
-		return -1;
-	}
+	ft_launch();
+	sigaction(SIGUSR1, &connect, 0);
+	sigaction(SIGUSR2, &connect, 0);
+	// if (sigaction(SIGUSR1, &connect, 0) == -1 || sigaction(SIGUSR2, &connect, 0) == -1) //어느것이든 일단 들어간다. 
+	// {
+	// 	printf("signal(SIGUSR1) Error\n");
+	// 	return -1;
+	// }
 	while (1)
 	{
 	}

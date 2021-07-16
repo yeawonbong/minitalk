@@ -21,42 +21,75 @@ void	send_sig2(int signo, siginfo_t *siginfo, void *none)
 	kill(siginfo->si_pid, SIGUSR2);
 }
 
-void	send_number(int signo, siginfo_t *siginfo, void *none)
+
+void	ft_send_number(int spid)
 {
 	int	num;
 	int	len;
-	struct sigaction sig1;
-	struct sigaction sig2;
-
 
 	num = 10;
 	//2 len = 1;
 	// while (temp && (temp /= 10))
 	// 	len++;
 	// printf("len is %d\n", len);
-	sig1.sa_sigaction = send_sig1;
-	sig2.sa_sigaction = send_sig2;
-	sig1.sa_flags = SA_SIGINFO;
-	sig2.sa_flags = SA_SIGINFO;
 	while(num)
 	{
-		printf("num : %d\n", num);
+		printf("num : %d, %d\n", num, num & 1);
 		if (num & 1)
 		{
-			sigaction(SIGUSR1, &sig2, 0);
-			// kill(siginfo->si_pid, SIGUSR2);
+			// sigaction(SIGUSR1, &sig2, 0);
+			kill(spid, SIGUSR2);
 			printf("SENT 1\n");
 		}
-		else
+		else if ((num & 1) == 0)
 		{
-			sigaction(SIGUSR1, &sig1, 0);
-			// kill(siginfo->si_pid, SIGUSR1);
+			// sigaction(SIGUSR1, &sig1, 0);
+			kill(spid, SIGUSR1);
 			printf("SETNT 0\n");
 		}
 		num = num >> 1;
 	}
+	return ;
 }
 
+
+void	send_number(int signo, siginfo_t *siginfo, void *none)
+{
+	ft_send_number(siginfo->si_pid);
+	// int	num;
+	// int	len;
+	// struct sigaction sig1;
+	// struct sigaction sig2;
+
+
+	// num = 10;
+	// //2 len = 1;
+	// // while (temp && (temp /= 10))
+	// // 	len++;
+	// // printf("len is %d\n", len);
+	// sig1.sa_sigaction = send_sig1;
+	// sig2.sa_sigaction = send_sig2;
+	// sig1.sa_flags = SA_SIGINFO;
+	// sig2.sa_flags = SA_SIGINFO;
+	// while(num)
+	// {
+	// 	printf("num : %d\n", num);
+	// 	pause();
+	// 	if (num & 1)
+	// 	{
+	// 		// sigaction(SIGUSR1, &sig2, 0);
+	// 		kill(siginfo->si_pid, SIGUSR2);
+	// 		printf("SENT 1\n");
+	// 	}
+	// 	else
+	// 	{
+	// 		// sigaction(SIGUSR1, &sig1, 0);
+	// 		kill(siginfo->si_pid, SIGUSR1);
+	// 		printf("SETNT 0\n");
+	// 	}
+	// 	num = num >> 1;
+	// }
+}
 
 int main(int argc, char *argv[])
 {
@@ -70,10 +103,12 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	spid = ft_atoi(argv[1]);
 	cpid = getpid();
-	kill(spid, SIGUSR1);
+	// kill(spid, SIGUSR1);
 	printf("my pid : %d\n", cpid);
-	sigaction(SIGUSR1, &sig1, 0);
-	while(1)
-	{}
+	// pause();
+	// sigaction(SIGUSR1, &sig1, 0);
+	ft_send_number(spid);
+	// while(1)
+	// {}
 	return(0);
 }
