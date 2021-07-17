@@ -6,7 +6,7 @@ void	ft_init(void)
 {
 	g_server.count = 8; // 초기화 함수 짜기, 구조체로 만들기
 	g_server.byte = 0;
-	g_server.add = 1; // 2^8
+	g_server.add = 1; // 2^0
 }
 
 
@@ -25,15 +25,13 @@ void	ft_connect(int signo, siginfo_t *siginfo, void *none)
 		ft_putchar_fd('\n', STDOUT_FILENO);
 		ft_init();
 	}
-	else // 여기에 조건 curr_client와 같을때만 넣어주기. 
-	{
-		g_server.byte += g_server.add * (signo - 30);
+	// 여기에 조건 curr_client와 같을때만 넣어주기. 
+	g_server.byte += g_server.add * (signo - 30);
 		// printf("GOT SIGUSR! -----SIGNO : %d\n", signo - 30);
 		// printf("CUR_ADD : %d //// CUR_NUM : %d\n", g_server.add, g_server.byte);
 		// printf("BYTE COUNT__%d\n",g_server.count);
-		g_server.add *= 2;
-		g_server.count--;
-	}
+	g_server.add *= 2;
+	g_server.count--;
 	if (g_server.count == 0)
 	{
 		// printf("문자하나끝남\n");
@@ -44,14 +42,12 @@ void	ft_connect(int signo, siginfo_t *siginfo, void *none)
 		}
 		else
 		{
-			g_server.currclient = 0;
 			ft_putstr_fd("\nGot all the signals, Disconnected!\n", STDOUT_FILENO);
-			// kill(g_server.currclient, SIGUSR2); // Disconnect
-			return ;
+			usleep(100);
+			kill(g_server.currclient, SIGUSR2); // Disconnect
+			g_server.currclient = 0;
 		}
 	}
-	// printf("시그널보내\n");
-	kill(siginfo->si_pid, SIGUSR1);
 	return ;
 }
 
