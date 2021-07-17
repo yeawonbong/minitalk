@@ -41,6 +41,7 @@ void	ft_connect(int signo, siginfo_t *siginfo, void *none)
 	{printf("문자하나끝남\n");
 		if (g_byte) // NULL이 아니면
 		{
+			ft_putstr_fd("\nㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ", STDOUT_FILENO);
 			ft_putchar_fd(g_byte, STDOUT_FILENO);
 			printf("출력\n\n\n");
 			ft_init();

@@ -12,18 +12,8 @@ void	ft_disconnect()
 	exit(EXIT_SUCCESS);
 }
 
-// void	send_end(void)
-// {
-// 	int i;
-// printf("SEND_END\n");
-// 	i = 8;
-// 	while (i--)
-// 		kill(g_spid, SIGUSR1);
-// }
-
 void	ft_send_number(int signo)
 {
-	// static int g_byte;
 printf("GOT_SIGNAL\n");
 	printf("넘버: %d\n", g_byte);
 
