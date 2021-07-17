@@ -17,6 +17,7 @@ void	ft_send_number(int signo)
 	// printf("-----------SENT %d\n", g_client.byte & 1);
 	signo++;
 	kill(g_client.spid, (g_client.byte & 1) + TO_SIGNAL);
+	usleep(1000);
 	g_client.byte = g_client.byte >> 1;
 	g_client.count++;
 	if (g_client.count < 8)
@@ -26,13 +27,13 @@ void	ft_send_number(int signo)
 		if (*(g_client.ptr + 1))
 		{
 			g_client.byte = *(++g_client.ptr);
-			printf("-----------------------------char ptr : %c\n", *g_client.ptr);
+			// printf("-----------------------------char ptr : %c\n", *g_client.ptr);
 		}
 		else
 		{
 			g_client.byte = 0;
 			g_client.null = 1;
-			printf("-----------------------------SET_NULL\n");
+			// printf("-----------------------------SET_NULL\n");
 		}
 		g_client.count = 0;
 		return ;
@@ -56,8 +57,9 @@ int main(int argc, char *argv[])
 		g_client.spid = ft_atoi(argv[1]);
 		kill(g_client.spid, SIGUSR1); // 처음 연결확인 signal
 	}
-	printf("my pid : %d\n", getpid());
+	// printf("my pid : %d\n", getpid());
 	signal(SIGUSR1, &ft_send_number);
+	pause();
 	while (1)
 	{
 	}
