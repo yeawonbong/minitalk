@@ -1,24 +1,34 @@
 #include "minitalk.h"
 
+static char *g_ptr;
 static int	g_spid;
 static int	g_byte; //8bit
-static int	g_idx;
 static int	g_count;
+static int	g_null;
 
-void	send_end(void)
+void	ft_disconnect()
 {
-	int i;
-
-	i = 8;
-	while (i--)
-		kill(g_spid, SIGUSR1);
+	ft_putstr_fd("\nSent all the signals, Disconnected!\n", STDOUT_FILENO);
+	exit(EXIT_SUCCESS);
 }
+
+// void	send_end(void)
+// {
+// 	int i;
+// printf("SEND_END\n");
+// 	i = 8;
+// 	while (i--)
+// 		kill(g_spid, SIGUSR1);
+// }
 
 void	ft_send_number(int signo)
 {
-printf("GOT_SIGNAL\n");	
-	if(g_count < 8)
-	{
+	// static int g_byte;
+printf("GOT_SIGNAL\n");
+	printf("넘버: %d\n", g_byte);
+
+	// if(g_count < 8)
+	// {
 		printf("g_byte : %d, %d\n", g_byte, g_byte & 1);
 		if (g_byte & 1)
 		{
@@ -29,23 +39,43 @@ printf("GOT_SIGNAL\n");
 		{
 			kill(g_spid, SIGUSR1);
 			printf("-----------SETNT 0\n");
-		}
+		}//축약가능
 		g_byte = g_byte >> 1;
 		g_count++;
-		return ;
+	// }
+	if (g_count == 8)
+	{
+		if (!g_null)
+		{
+			if (*(g_ptr + 1))
+			{
+				g_byte = *(++g_ptr);
+				printf("-----------------------------char ptr : %c\n", *g_ptr);
+			}
+			else
+			{
+				g_byte = 0;
+				g_null = 1;
+				printf("-----------------------------SET_NULL\n");
+			}
+			g_count = 0;
+			return ;
+		}
+		ft_disconnect();
 	}
-	g_idx++;
-	printf("EXIT\n");
-	send_end();
-	exit(EXIT_SUCCESS);
+	printf("나감\n");
+	return ;
 }
 
 int main(int argc, char *argv[])
 {
 	struct sigaction sig1;
 
-	g_byte = (int)argv[2][g_idx];
+	g_ptr = argv[2];
+	g_byte = *g_ptr;
 	printf("first g_byte : %d\n", g_byte);
+	printf("TEST ptr : %c\n", *g_ptr);
+
 	if (argc != 3)
 	{
 		ft_putstr_fd("Error : Invalid Input\n", STDOUT_FILENO);
@@ -58,9 +88,15 @@ int main(int argc, char *argv[])
 	}
 	printf("my pid : %d\n", getpid());
 	signal(SIGUSR1, &ft_send_number);
-	printf("넘버: %d\n", g_byte);
-	while (argv[2][g_idx] && g_count < 8)
+	// signal(SIGUSR2, &ft_disconnect);
+	// printf("넘버: %d\n", g_byte);
+	while (1)
 	{
+		// if (!*g_ptr)
+		// {
+		// 	printf("EXIT\n");
+		// 	send_end();
+		// }
 	}
 	return(0);
 }
