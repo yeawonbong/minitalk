@@ -1,27 +1,43 @@
-SRC = server.c\
+SRCS = server.c\
 client.c
 
 CC = gcc
-CFLAGS =
+CFLAGS = -Wall -Wextra -Werror
 AR = ar rcs
-NAME = libft.a
-OBJ = $(SRC:.c=.o)
+NAME = minitalk.a
+OBJS = $(SRCS:.c=.o)
 
+LIB = libft.a
+LIB_DIR = ./include/libft
 SERVER = server
 CLIENT = client
 
-all : sv cl
+all : $(SERVER) $(CLIENT)
 
-sv : $(SERVER)
+$(SERVER) : $(NAME)
+	$(CC) $(CFLAGS) -o $@ $(NAME)
 
-$(SERVER) : 
-	$(CC) $(CFLAGS) -o $@ server.c libft.a
+$(CLIENT) : $(NAME)
+	$(CC) $(CFLAGS) -o $@ $(NAME)
 
-cl : $(CLIENT)
+$(NAME) : $(OBJS)
+	make -C $(LIB_DIR)
+	@cp $(LIB_DIR)/$(LIB) $@
+	$(AR) $@ $(OBJS)
 
-$(CLIENT) :
-	$(CC) $(CFLAGS) -o $@ client.c libft.a
+$(OBJS) : $(SRCS)
+	$(CC) $(CFLAGS) -c $(SRCS)
 
-fclean :
-	rm -f server client
+
+fclean : clean
+	@make fclean -C $(LIB_DIR)
+	rm -f $(LIB) $(NAME)
+	rm -f $(SERVER) $(CLIENT)
+
+clean :
+	@make clean -C $(LIB_DIR)
+	rm -rf $(OBJS)
+
 re : fclean all
+
+.PHONY : all clean fclean re

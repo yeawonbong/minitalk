@@ -6,7 +6,7 @@
 #    By: ybong <ybong@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/28 00:12:32 by ybong             #+#    #+#              #
-#    Updated: 2021/07/17 00:54:19 by ybong            ###   ########.fr        #
+#    Updated: 2021/07/18 01:53:05 by ybong            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -75,15 +75,11 @@ $(NAME) : $(OBJ)
 %.o:%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-clean :
-	rm -f ./isto_functions/*.o
-	rm -f ./lst_functions/*.o
-	rm -f ./malloc_functions/*.o
-	rm -f ./mem_functions/*.o
-	rm -f ./put_fd_functions/*.o
-	rm -f ./str_functions/*.o
-
 fclean : clean
 	rm -f $(NAME)
+
+clean :
+	rm -f $(OBJ)
+
 
 re : fclean all

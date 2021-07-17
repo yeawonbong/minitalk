@@ -1,10 +1,6 @@
-#include "minitalk.h"
+#include "./include/client.h"
 
-static char *g_ptr;
-static int	g_spid;
-static int	g_byte; //8bit
-static int	g_count;
-static int	g_null;
+static t_client g_client;
 
 void	ft_disconnect()
 {
@@ -14,79 +10,56 @@ void	ft_disconnect()
 
 void	ft_send_number(int signo)
 {
-printf("GOT_SIGNAL\n");
-	printf("넘버: %d\n", g_byte);
+	// printf("GOT_SIGNAL\n");
+	// printf("넘버: %d\n", g_client.byte);
+	// printf("g_client.byte : %d, %d\n", g_client.byte, g_client.byte & 1);
 
-	// if(g_count < 8)
-	// {
-		printf("g_byte : %d, %d\n", g_byte, g_byte & 1);
-		if (g_byte & 1)
-		{
-			kill(g_spid, SIGUSR2);
-			printf("-----------SENT 1\n");
-		}
-		else if ((g_byte & 1) == 0)
-		{
-			kill(g_spid, SIGUSR1);
-			printf("-----------SETNT 0\n");
-		}//축약가능
-		g_byte = g_byte >> 1;
-		g_count++;
-	// }
-	if (g_count == 8)
+	// printf("-----------SENT %d\n", g_client.byte & 1);
+	signo++;
+	kill(g_client.spid, (g_client.byte & 1) + TO_SIGNAL);
+	g_client.byte = g_client.byte >> 1;
+	g_client.count++;
+	if (g_client.count < 8)
+		return ;
+	if (!g_client.null)
 	{
-		if (!g_null)
+		if (*(g_client.ptr + 1))
 		{
-			if (*(g_ptr + 1))
-			{
-				g_byte = *(++g_ptr);
-				printf("-----------------------------char ptr : %c\n", *g_ptr);
-			}
-			else
-			{
-				g_byte = 0;
-				g_null = 1;
-				printf("-----------------------------SET_NULL\n");
-			}
-			g_count = 0;
-			return ;
+			g_client.byte = *(++g_client.ptr);
+			printf("-----------------------------char ptr : %c\n", *g_client.ptr);
 		}
-		ft_disconnect();
+		else
+		{
+			g_client.byte = 0;
+			g_client.null = 1;
+			printf("-----------------------------SET_NULL\n");
+		}
+		g_client.count = 0;
+		return ;
 	}
-	printf("나감\n");
-	return ;
+	ft_disconnect();
 }
 
 int main(int argc, char *argv[])
 {
-	struct sigaction sig1;
-
-	g_ptr = argv[2];
-	g_byte = *g_ptr;
-	printf("first g_byte : %d\n", g_byte);
-	printf("TEST ptr : %c\n", *g_ptr);
+	g_client.ptr = argv[2];
+	g_client.byte = *g_client.ptr;
+	// printf("-----------------------------char ptr : %c\n", *g_client.ptr);
 
 	if (argc != 3)
 	{
 		ft_putstr_fd("Error : Invalid Input\n", STDOUT_FILENO);
 		exit(EXIT_FAILURE);
 	}
-	if (!g_spid)
+	if (!g_client.spid)
 	{
-		g_spid = ft_atoi(argv[1]);
-		kill(g_spid, SIGUSR1); // 처음 연결확인 signal
+		g_client.spid = ft_atoi(argv[1]);
+		kill(g_client.spid, SIGUSR1); // 처음 연결확인 signal
 	}
 	printf("my pid : %d\n", getpid());
 	signal(SIGUSR1, &ft_send_number);
-	// signal(SIGUSR2, &ft_disconnect);
-	// printf("넘버: %d\n", g_byte);
 	while (1)
 	{
-		// if (!*g_ptr)
-		// {
-		// 	printf("EXIT\n");
-		// 	send_end();
-		// }
 	}
 	return(0);
 }
