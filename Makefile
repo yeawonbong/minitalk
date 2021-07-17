@@ -3,8 +3,6 @@ client.c
 
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
-AR = ar rcs
-NAME = minitalk.a
 OBJS = $(SRCS:.c=.o)
 
 LIB = libft.a
@@ -14,24 +12,19 @@ CLIENT = client
 
 all : $(SERVER) $(CLIENT)
 
-$(SERVER) : $(NAME)
-	$(CC) $(CFLAGS) -o $@ $(NAME)
+$(SERVER) : $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(SERVER).o $(LIB_DIR)/$(LIB)
 
-$(CLIENT) : $(NAME)
-	$(CC) $(CFLAGS) -o $@ $(NAME)
-
-$(NAME) : $(OBJS)
-	make -C $(LIB_DIR)
-	@cp $(LIB_DIR)/$(LIB) $@
-	$(AR) $@ $(OBJS)
+$(CLIENT) : $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(CLIENT).o $(LIB_DIR)/$(LIB)
 
 $(OBJS) : $(SRCS)
+	@make -C $(LIB_DIR)
 	$(CC) $(CFLAGS) -c $(SRCS)
 
 
 fclean : clean
 	@make fclean -C $(LIB_DIR)
-	rm -f $(LIB) $(NAME)
 	rm -f $(SERVER) $(CLIENT)
 
 clean :
