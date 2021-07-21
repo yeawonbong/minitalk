@@ -15,8 +15,10 @@ void	ft_init(void)
 
 void	ft_connect(int signo, siginfo_t *siginfo, void *none)
 {
-	printf("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡINㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n");
-	printf("---currclient: %d\n---si_pid is : %d\n", g_currclient, siginfo->si_pid);
+	ft_putchar_fd('.', STDOUT_FILENO);//
+
+	// printf("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡINㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n");
+	// printf("---currclient: %d\n---si_pid is : %d\n", g_currclient, siginfo->si_pid);
 
 	none++;
 	if (!g_currclient) // Client 처음 연결 signal
@@ -27,33 +29,40 @@ void	ft_connect(int signo, siginfo_t *siginfo, void *none)
 		ft_putnbr_fd(siginfo->si_pid, STDOUT_FILENO);
 		ft_putchar_fd('\n', STDOUT_FILENO);
 		ft_init();
+	kill(siginfo->si_pid, SIGUSR1);
+
+		return ;
 	}
-	else
-	{
+	// else
+	// {
 		g_byte += g_add * (signo - 30);
-		printf("GOT SIGUSR! -----SIGNO : %d\n", signo - 30);
-		printf("CUR_ADD : %d //// CUR_NUM : %d\n", g_add, g_byte);
+		// printf("GOT SIGUSR! -----SIGNO : %d\n", signo - 30);
+		// printf("CUR_ADD : %d //// CUR_NUM : %d\n", g_add, g_byte);
 		g_add *= 2;
-		printf("BYTE COUNT__%d\n",g_count);
+		// printf("BYTE COUNT__%d\n",g_count);
 		g_count--;
-	}
+	// }
 	if (g_count == 0)
-	{printf("문자하나끝남\n");
+	{
+		//printf("문자하나끝남\n");
 		if (g_byte) // NULL이 아니면
 		{
 			ft_putchar_fd(g_byte, STDOUT_FILENO);
-			printf("출력\n\n\n");
+			// printf("출력\n\n\n");
 			ft_init();
 		}
 		else
 		{
 			ft_putstr_fd("\nGot all the signals, Disconnected!\n", STDOUT_FILENO);
-			kill(g_currclient, SIGUSR2); // Disconnect
 			g_currclient = 0;
+			// ft_init();
+			sleep(1);
+			kill(siginfo->si_pid, SIGUSR2); // Disconnect
+			ft_init();
 			return ;
 		}
 	}
-	printf("시그널보내\n");
+	// printf("시그널보내\n");
 	kill(siginfo->si_pid, SIGUSR1);
 	return ;
 }
