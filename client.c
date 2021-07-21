@@ -2,8 +2,9 @@
 
 static t_client g_client;
 
-void	ft_disconnect()
+void	ft_disconnect(int signo)
 {
+	signo++;
 	ft_putstr_fd("\nSent all the signals, Disconnected!\n", STDOUT_FILENO);
 	exit(EXIT_SUCCESS);
 }
@@ -15,29 +16,40 @@ void	ft_send_number(int signo)
 	// printf("g_client.byte : %d, %d\n", g_client.byte, g_client.byte & 1);
 
 	// printf("-----------SENT %d\n", g_client.byte & 1);
-	signo++;
-	kill(g_client.spid, (g_client.byte & 1) + TO_SIGNAL);
+	signo++; // 이거 빼고 TO_SIGNAL 대체해도 됨 
+	kill(g_client.spid, (g_client.byte & 1) + TO_SIGNAL); //signo (30)
 	g_client.byte = g_client.byte >> 1;
 	g_client.count++;
 	if (g_client.count < 8)
 		return ;
-	if (!g_client.null)
+	else if (!g_client.null) //8번째일 때
 	{
-		if (*(g_client.ptr + 1))
+		if (*(g_client.ptr + 1)) // 다음 byte
 		{
 			g_client.byte = *(++g_client.ptr);
+			g_client.count = 0;
 			printf("-----------------------------char ptr : %c\n", *g_client.ptr);
 		}
-		else
+		else //null 보내려고 
 		{
 			g_client.byte = 0;
-			g_client.null = 1;
+			g_client.null = 1; //얘를 지금 잠시 주석해놨음. 
 			printf("-----------------------------SET_NULL\n");
+			g_client.count = 0;
 		}
-		g_client.count = 0;
+		// if (!g_client.null)
+		printf("종료\n");
 		return ;
+		// }
+		// return ;
 	}
-	ft_disconnect();
+	// if (!g_client.null)
+	// 	return ;
+	printf("loop\n");
+	signal(SIGUSR2, &ft_disconnect);
+	while(1)
+	{}
+	// ft_disconnect();
 }
 
 int main(int argc, char *argv[])
@@ -58,6 +70,7 @@ int main(int argc, char *argv[])
 	}
 	printf("my pid : %d\n", getpid());
 	signal(SIGUSR1, &ft_send_number);
+	// signal(SIGUSR2, &ft_disconnect);
 	while (1)
 	{
 	}

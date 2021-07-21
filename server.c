@@ -47,9 +47,9 @@ void	ft_connect(int signo, siginfo_t *siginfo, void *none)
 		}
 		else
 		{
-			g_currclient = 0;
 			ft_putstr_fd("\nGot all the signals, Disconnected!\n", STDOUT_FILENO);
-			// kill(g_currclient, SIGUSR2); // Disconnect
+			kill(g_currclient, SIGUSR2); // Disconnect
+			g_currclient = 0;
 			return ;
 		}
 	}
