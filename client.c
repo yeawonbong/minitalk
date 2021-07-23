@@ -11,9 +11,8 @@ void	ft_disconnect(int signo)
 
 void	ft_send_number(int signo)
 {
-	signo++; // 이거 빼고 TO_SIGNAL 대체해도 됨 
 	usleep(50);
-	kill(g_client.spid, (g_client.byte & 1) + TO_SIGNAL); //signo (30)
+	kill(g_client.spid, (g_client.byte & 1) + signo); //signo (30)
 	g_client.byte = g_client.byte >> 1;
 	g_client.count++;
 	if (g_client.count < 8)

@@ -9,7 +9,7 @@ void	ft_init(void)
 {
 	g_count = 8; // 초기화 함수 짜기, 구조체로 만들기
 	g_byte = 0;
-	g_add = 1; // 2^8
+	g_add = 1; // 2^0
 }
 
 
