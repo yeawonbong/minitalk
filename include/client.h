@@ -13,6 +13,7 @@
 # include <signal.h>
 
 # define TO_SIGNAL 30
+
 typedef struct s_client
 {
 	 char *ptr;
