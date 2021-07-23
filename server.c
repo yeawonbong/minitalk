@@ -7,15 +7,14 @@ static int	g_add;
 
 void	ft_init(void)
 {
-	g_count = 8; // 초기화 함수 짜기, 구조체로 만들기
+	g_count = 8;
 	g_byte = 0;
-	g_add = 1; // 2^8
+	g_add = 1; // 2^0
 }
 
 
 void	ft_connect(int signo, siginfo_t *siginfo, void *none)
 {
-	ft_putchar_fd('.', STDOUT_FILENO);//
 	none++;
 	if (!g_currclient) // Client 처음 연결 signal
 	{
@@ -37,19 +36,16 @@ void	ft_connect(int signo, siginfo_t *siginfo, void *none)
 	// }
 		if (g_count == 0)
 		{
-			ft_putstr_fd("문자하나끝남\n", STDOUT_FILENO);
 			if (g_byte) // NULL이 아니면
 			{
 				// ft_putstr_fd("----------------------", STDOUT_FILENO);
 				ft_putchar_fd(g_byte, STDOUT_FILENO);
 				// printf("\n");
 				ft_init();
-				// kill(siginfo->si_pid, SIGUSR1);
-				// return ;
 			}
 			else
 			{
-				ft_putstr_fd("\nGot all ßthe signals, Disconnected!\n", STDOUT_FILENO);
+				ft_putstr_fd("\nGot all the signals, Disconnected!\n", STDOUT_FILENO);
 				g_currclient = 0;
 				usleep(100);
 				kill(siginfo->si_pid, SIGUSR2); // Disconnect
