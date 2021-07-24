@@ -20,7 +20,7 @@ void	ft_connect(int signo, siginfo_t *siginfo, void *none)
 	{
  //나중에는 8bit 0일때 g_currclient = 0으로 바꿔주고, 0일경우로 조건 넣어주기 (다른 client 차단해야함)
 		g_currclient = siginfo->si_pid;
-		ft_putstr_fd("Successfully Connected!\n> Client PID : ", STDOUT_FILENO);
+		ft_putstr_fd("Successfully Connected!\n Client PID : ", STDOUT_FILENO);
 		ft_putnbr_fd(siginfo->si_pid, STDOUT_FILENO);
 		ft_putchar_fd('\n', STDOUT_FILENO);
 		ft_init();
