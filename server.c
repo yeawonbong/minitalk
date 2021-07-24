@@ -22,7 +22,7 @@ void	ft_connect(int signo, siginfo_t *siginfo, void *none)
 		ft_putchar_fd('\n', STDOUT_FILENO);
 		ft_init();
 		usleep(50);
-		kill(g_currclient, SIGUSR1);
+		kill(g_server.currclient, SIGUSR1);
 		return ;
 	}
 	
