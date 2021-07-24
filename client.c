@@ -1,37 +1,30 @@
 #include "./include/client.h"
 
+static t_client g_client;
+
 void	ft_disconnect(int signo)
 {
 	signo++;
-	ft_putstr_fd("\nSent all the signals, Disconnected!\n", STDOUT_FILENO);
+	ft_putstr_fd("Sent all the signals, Disconnected!\n", STDOUT_FILENO);
 	exit(EXIT_SUCCESS);
 }
 
 void	ft_send_number(int spid, char *argv[])
 {
-	// printf("GOT_SIGNAL\n");
-	// printf("넘버: %d\n", g_client.byte);
-	// printf("g_client.byte : %d, %d\n", g_client.byte, g_client.byte & 1);
-
-	// printf("-----------SENT %d\n", g_client.byte & 1);
-	int i;
-	int	byte;
-	int	count;
-
-	i = 0;
-	while(argv[2][i])
+	usleep(50);
+	kill(g_client.spid, (g_client.byte & 1) + signo); //signo (30)
+	g_client.byte = g_client.byte >> 1;
+	g_client.count++;
+	if (g_client.count < 8)
+		return ;
+	else if (!g_client.null) //8번째일 때
 	{
-		count = 0;
-		byte = argv[2][i];
-		while(count < 8)
+		if (*(g_client.ptr + 1)) // 다음 byte
+			g_client.byte = *(++g_client.ptr);
+		else //null 보내려고 
 		{
-			// printf("to_send: %d\n", byte);
-			kill(spid, (byte & 1) + TO_SIGNAL);
-	// printf("-----------SENT %d\n", byte & 1);
-
-			usleep(1000);
-			byte = byte >> 1;
-			count++;
+			g_client.byte = 0;
+			g_client.null = 1; //얘를 지금 잠시 주석해놨음.
 		}
 		i++;
 	}
@@ -43,23 +36,29 @@ void	ft_send_number(int spid, char *argv[])
 		usleep(1000);
 		// printf("SNED NULL\n");
 	}
-	return ;	
+	while(1)
+		signal(SIGUSR2, &ft_disconnect);
 }
 
 int main(int argc, char *argv[])
 {
-	// printf("-----------------------------char ptr : %c\n", *g_client.ptr);
-
+	g_client.ptr = argv[2];
+	g_client.byte = *g_client.ptr;
 	if (argc != 3)
 	{
 		ft_putstr_fd("Error : Invalid Input\n", STDOUT_FILENO);
 		exit(EXIT_FAILURE);
 	}
-	ft_send_number(ft_atoi(argv[1]), argv);
-	signal(SIGUSR2, &ft_disconnect);
-	// pause();
+	if (!g_client.spid)
+	{
+		g_client.spid = ft_atoi(argv[1]);
+		usleep(50);
+		kill(g_client.spid, SIGUSR1); // 처음 연결확인 signal
+	}
 	while (1)
 	{
+		signal(SIGUSR1, &ft_send_number);
+		signal(SIGUSR2, &ft_disconnect);
 	}
 	return(0);
 }

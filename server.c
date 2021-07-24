@@ -12,42 +12,41 @@ void	ft_init(void)
 
 void	ft_connect(int signo, siginfo_t *siginfo, void *none)
 {
-	// printf("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡINㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n");
-	// printf("---currclient: %d\n---si_pid is : %d\n", g_server.currclient, siginfo->si_pid);
-
 	none++;
 	if (!g_server.currclient) // Client 처음 연결 signal
 	{
  //나중에는 8bit 0일때 g_server.currclient = 0으로 바꿔주고, 0일경우로 조건 넣어주기 (다른 client 차단해야함)
 		g_server.currclient = siginfo->si_pid;
-		ft_putstr_fd("Successfully Connected!\n> Client PID : ", STDOUT_FILENO);
+		ft_putstr_fd("Successfully Connected!\n Client PID : ", STDOUT_FILENO);
 		ft_putnbr_fd(siginfo->si_pid, STDOUT_FILENO);
 		ft_putchar_fd('\n', STDOUT_FILENO);
 		ft_init();
 	}
-	// 여기에 조건 curr_client와 같을때만 넣어주기. 
-	g_server.byte += g_server.add * (signo - 30);
-		// printf("GOT SIGUSR! -----SIGNO : %d\n", signo - 30);
-		// printf("CUR_ADD : %d //// CUR_NUM : %d\n", g_server.add, g_server.byte);
-		// printf("BYTE COUNT__%d\n",g_server.count);
-	g_server.add *= 2;
-	g_server.count--;
-	if (g_server.count == 0)
+	else if (siginfo->si_pid == g_server.currclient)
 	{
-		// printf("문자하나끝남\n");
-		if (g_server.byte) // NULL이 아니면
+		g_server.byte += g_server.add * (signo - 30);
+		g_server.add *= 2;
+		g_server.count--;
+		if (g_server.count == 0)
 		{
-			ft_putchar_fd(g_server.byte, STDOUT_FILENO);
-			ft_init();
-		}
-		else
-		{
-			ft_putstr_fd("\nGot all the signals, Disconnected!\n", STDOUT_FILENO);
-			usleep(100);
-			kill(g_server.currclient, SIGUSR2); // Disconnect
-			g_server.currclient = 0;
+			if (g_server.byte) // NULL이 아니면
+			{
+				ft_putchar_fd(g_server.byte, STDOUT_FILENO);
+				ft_init();
+			}
+			else
+			{
+				ft_putstr_fd("\nGot all the signals, Disconnected!\n", STDOUT_FILENO);
+				g_server.currclient = 0;
+				usleep(50);
+				kill(siginfo->si_pid, SIGUSR2); // Disconnect
+				ft_init();
+				return ;
+			}
 		}
 	}
+	usleep(50);
+	kill(siginfo->si_pid, SIGUSR1);
 	return ;
 }
 
@@ -65,11 +64,10 @@ int	main(void)
 	connect.sa_sigaction = ft_connect;
 	connect.sa_flags = SA_SIGINFO;
 	ft_launch();
-	sigaction(SIGUSR1, &connect, NULL);
-	sigaction(SIGUSR2, &connect, NULL);
-	// pause();
 	while (1)
 	{
+		sigaction(SIGUSR1, &connect, NULL);
+		sigaction(SIGUSR2, &connect, NULL);
 	}
 }
 
