@@ -4,7 +4,7 @@ static t_server g_server;
 
 void	ft_init(void)
 {
-	g_server.count = 8; // 초기화 함수 짜기, 구조체로 만들기
+	g_server.count = 8;
 	g_server.byte = 0;
 	g_server.add = 1; // 2^0
 }
@@ -25,7 +25,6 @@ void	ft_connect(int signo, siginfo_t *siginfo, void *none)
 		kill(g_server.currclient, SIGUSR1);
 		return ;
 	}
-	
 	else if (siginfo->si_pid == g_server.currclient)
 	{
 		g_server.byte += g_server.add * (signo - 30);
