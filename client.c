@@ -11,11 +11,7 @@ void	ft_disconnect(int signo)
 
 void	ft_send_number(int signo)
 {
-<<<<<<< HEAD
 	usleep(50);
-=======
-	usleep(100);
->>>>>>> deleting_comments_process
 	kill(g_client.spid, (g_client.byte & 1) + signo); //signo (30)
 	g_client.byte = g_client.byte >> 1;
 	g_client.count++;
@@ -28,27 +24,11 @@ void	ft_send_number(int signo)
 		else //null 보내려고 
 		{
 			g_client.byte = 0;
-<<<<<<< HEAD
-			g_client.null = 1; //얘를 지금 잠시 주석해놨음.
-		}
-	}
-	// printf("ENDS\n");
-	// i = 8;
-	// while(0 < i--)
-	// {
-	// 	kill(spid, SIGUSR1);
-	// 	usleep(1000);
-	// 	// printf("SNED NULL\n");
-	// }
-	while(1)
-		signal(SIGUSR2, &ft_disconnect);
-=======
 			g_client.null = 1;
 			g_client.count = 0;
 		}
 	}
 	return ;
->>>>>>> deleting_comments_process
 }
 
 int main(int argc, char *argv[])
@@ -66,11 +46,8 @@ int main(int argc, char *argv[])
 		usleep(50);
 		kill(g_client.spid, SIGUSR1); // 처음 연결확인 signal
 	}
-<<<<<<< HEAD
-=======
 	signal(SIGUSR1, &ft_send_number);
 	signal(SIGUSR2, &ft_disconnect);
->>>>>>> deleting_comments_process
 	while (1)
 	{
 		signal(SIGUSR1, &ft_send_number);

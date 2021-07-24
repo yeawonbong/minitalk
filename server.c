@@ -4,15 +4,9 @@ static t_server g_server;
 
 void	ft_init(void)
 {
-<<<<<<< HEAD
 	g_server.count = 8; // 초기화 함수 짜기, 구조체로 만들기
 	g_server.byte = 0;
 	g_server.add = 1; // 2^0
-=======
-	g_count = 8;
-	g_byte = 0;
-	g_add = 1; // 2^0
->>>>>>> deleting_comments_process
 }
 
 
@@ -36,11 +30,7 @@ void	ft_connect(int signo, siginfo_t *siginfo, void *none)
 		g_server.count--;
 		if (g_server.count == 0)
 		{
-<<<<<<< HEAD
 			if (g_server.byte) // NULL이 아니면
-=======
-			if (g_byte) // NULL이 아니면
->>>>>>> deleting_comments_process
 			{
 				ft_putchar_fd(g_server.byte, STDOUT_FILENO);
 				ft_init();
@@ -48,13 +38,8 @@ void	ft_connect(int signo, siginfo_t *siginfo, void *none)
 			else
 			{
 				ft_putstr_fd("\nGot all the signals, Disconnected!\n", STDOUT_FILENO);
-<<<<<<< HEAD
 				g_server.currclient = 0;
 				usleep(50);
-=======
-				g_currclient = 0;
-				usleep(100);
->>>>>>> deleting_comments_process
 				kill(siginfo->si_pid, SIGUSR2); // Disconnect
 				ft_init();
 				return ;
