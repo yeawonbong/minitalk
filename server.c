@@ -24,7 +24,7 @@ void	ft_connect(int signo, siginfo_t *siginfo, void *none)
 		ft_putnbr_fd(siginfo->si_pid, STDOUT_FILENO);
 		ft_putchar_fd('\n', STDOUT_FILENO);
 		ft_init();
-		usleep(100);
+		usleep(50);
 		kill(g_currclient, SIGUSR1);
 		return ;
 	}
@@ -47,7 +47,7 @@ void	ft_connect(int signo, siginfo_t *siginfo, void *none)
 			{
 				ft_putstr_fd("\nGot all the signals, Disconnected!\n", STDOUT_FILENO);
 				g_currclient = 0;
-				usleep(100);
+				usleep(50);
 				kill(siginfo->si_pid, SIGUSR2); // Disconnect
 				ft_init();
 				return ;
@@ -55,7 +55,7 @@ void	ft_connect(int signo, siginfo_t *siginfo, void *none)
 		}
 	}
 	// ft_putstr_fd("시그널보낸다\n", STDOUT_FILENO);
-	usleep(100);
+	usleep(50);
 	kill(siginfo->si_pid, SIGUSR1);
 	return ;
 }

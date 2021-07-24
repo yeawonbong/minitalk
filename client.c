@@ -11,7 +11,7 @@ void	ft_disconnect(int signo)
 
 void	ft_send_number(int signo)
 {
-	usleep(100);
+	usleep(50);
 	kill(g_client.spid, (g_client.byte & 1) + signo); //signo (30)
 	g_client.byte = g_client.byte >> 1;
 	g_client.count++;
@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 	if (!g_client.spid)
 	{
 		g_client.spid = ft_atoi(argv[1]);
-		usleep(100);
+		usleep(50);
 		kill(g_client.spid, SIGUSR1); // 처음 연결확인 signal
 	}
 	signal(SIGUSR1, &ft_send_number);
