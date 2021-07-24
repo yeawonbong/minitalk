@@ -22,6 +22,7 @@ void	ft_connect(int signo, siginfo_t *siginfo, void *none)
 		ft_putchar_fd('\n', STDOUT_FILENO);
 		ft_init();
 	}
+	
 	else if (siginfo->si_pid == g_server.currclient)
 	{
 		g_server.byte += g_server.add * (signo - 30);
@@ -70,6 +71,3 @@ int	main(void)
 		sigaction(SIGUSR2, &connect, NULL);
 	}
 }
-
-
-// 두번째 클라이언트 들어올 때 오류남. 
