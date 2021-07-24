@@ -11,19 +11,24 @@ void	ft_disconnect(int signo)
 
 void	ft_send_number(int signo)
 {
+<<<<<<< HEAD
 	usleep(50);
+=======
+	usleep(100);
+>>>>>>> deleting_comments_process
 	kill(g_client.spid, (g_client.byte & 1) + signo); //signo (30)
 	g_client.byte = g_client.byte >> 1;
 	g_client.count++;
 	if (g_client.count < 8)
 		return ;
-	else if (!g_client.null) //8번째일 때
+	if (!g_client.null) //8번째일 때
 	{
 		if (*(g_client.ptr + 1)) // 다음 byte
 			g_client.byte = *(++g_client.ptr);
 		else //null 보내려고 
 		{
 			g_client.byte = 0;
+<<<<<<< HEAD
 			g_client.null = 1; //얘를 지금 잠시 주석해놨음.
 		}
 	}
@@ -37,6 +42,13 @@ void	ft_send_number(int signo)
 	// }
 	while(1)
 		signal(SIGUSR2, &ft_disconnect);
+=======
+			g_client.null = 1;
+			g_client.count = 0;
+		}
+	}
+	return ;
+>>>>>>> deleting_comments_process
 }
 
 int main(int argc, char *argv[])
@@ -54,6 +66,11 @@ int main(int argc, char *argv[])
 		usleep(50);
 		kill(g_client.spid, SIGUSR1); // 처음 연결확인 signal
 	}
+<<<<<<< HEAD
+=======
+	signal(SIGUSR1, &ft_send_number);
+	signal(SIGUSR2, &ft_disconnect);
+>>>>>>> deleting_comments_process
 	while (1)
 	{
 		signal(SIGUSR1, &ft_send_number);
