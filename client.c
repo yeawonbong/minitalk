@@ -20,22 +20,17 @@ void	ft_send_number(int signo)
 	else if (!g_client.null) //8번째일 때
 	{
 		if (*(g_client.ptr + 1)) // 다음 byte
-		{
 			g_client.byte = *(++g_client.ptr);
-			g_client.count = 0;
-		}
 		else //null 보내려고 
 		{
 			g_client.byte = 0;
-			g_client.null = 1; //얘를 지금 잠시 주석해놨음. 
-			g_client.count = 0;
+			g_client.null = 1; //얘를 지금 잠시 주석해놨음.
 		}
+		g_client.count = 0;
 		return ;
 	}
 	while(1)
-	{
 		signal(SIGUSR2, &ft_disconnect);
-	}
 }
 
 int main(int argc, char *argv[])

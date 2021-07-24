@@ -14,6 +14,8 @@
 
 typedef struct s_server
 {
+	struct sigaction connect;
+	// sigset_t	block_mask;
 	int	currclient; // 전역 구조체 변수로 만들기
 	int	count;
 	int	byte;
