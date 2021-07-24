@@ -21,6 +21,9 @@ void	ft_connect(int signo, siginfo_t *siginfo, void *none)
 		ft_putnbr_fd(siginfo->si_pid, STDOUT_FILENO);
 		ft_putchar_fd('\n', STDOUT_FILENO);
 		ft_init();
+		usleep(50);
+		kill(g_currclient, SIGUSR1);
+		return ;
 	}
 	
 	else if (siginfo->si_pid == g_server.currclient)
