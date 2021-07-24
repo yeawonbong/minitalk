@@ -25,8 +25,8 @@ void	ft_send_number(int signo)
 		{
 			g_client.byte = 0;
 			g_client.null = 1;
-			g_client.count = 0;
 		}
+		g_client.count = 0;
 	}
 	return ;
 }
