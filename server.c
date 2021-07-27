@@ -2,11 +2,10 @@
 
 static t_server g_server;
 
-void	ft_launch()
+void	ft_send_signal(int client, int signo)
 {
-	ft_putstr_fd("Server Launched! PID : ", STDOUT_FILENO);
-	ft_putnbr_fd(getpid(), STDOUT_FILENO);
-	ft_putstr_fd("\n", STDOUT_FILENO);
+	usleep(50);
+	kill(client, signo);
 }
 
 void	ft_init(void)
@@ -23,8 +22,7 @@ void	ft_connect(int pid)
 	ft_putnbr_fd(g_server.currclient, STDOUT_FILENO);
 	ft_putchar_fd('\n', STDOUT_FILENO);
 	ft_init();
-	usleep(50);
-	kill(g_server.currclient, SIGUSR1);
+	ft_send_signal(g_server.currclient, SIGUSR1);
 }
 
 
@@ -56,8 +54,7 @@ void	ft_server(int signo, siginfo_t *siginfo, void *none)
 		else
 		{
 			ft_putstr_fd("\nGot all the signals, Disconnected!\n", STDOUT_FILENO);
-			usleep(50);
-			kill(siginfo->si_pid, SIGUSR2); // Disconnect
+			ft_send_signal(g_server.currclient, SIGUSR2);
 			if (g_server.nextclient)
 			{
 				ft_connect(g_server.nextclient);
@@ -69,8 +66,7 @@ void	ft_server(int signo, siginfo_t *siginfo, void *none)
 			return ;
 		}
 	}
-	usleep(50);
-	kill(siginfo->si_pid, SIGUSR1);
+	ft_send_signal(g_server.currclient, SIGUSR1);
 	return ;
 }
 
@@ -80,7 +76,9 @@ int	main(void)
 
 	server.sa_sigaction = ft_server;
 	server.sa_flags = SA_SIGINFO;
-	ft_launch();
+	ft_putstr_fd("Server Launched! PID : ", STDOUT_FILENO);
+	ft_putnbr_fd(getpid(), STDOUT_FILENO);
+	ft_putstr_fd("\n", STDOUT_FILENO);
 	while (1)
 	{
 		sigaction(SIGUSR1, &server, NULL);

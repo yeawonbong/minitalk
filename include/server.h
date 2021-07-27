@@ -14,7 +14,6 @@
 
 typedef struct s_server
 {
-	struct sigaction connect;
 	int	nextclient;
 	int	currclient; // 전역 구조체 변수로 만들기
 	int	count;
@@ -22,3 +21,5 @@ typedef struct s_server
 	int	add;
 }				t_server;
 #endif
+
+//0728 - 전역변수 없애기
