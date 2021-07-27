@@ -34,18 +34,13 @@ void	ft_server(int signo, siginfo_t *siginfo, void *none)
 	if (!g_server.currclient) // Client 처음 연결 signal
 	{
 		ft_connect(siginfo->si_pid);
-		// g_server.currclient = siginfo->si_pid;
-		// ft_putstr_fd("Successfully Connected!\nClient PID : ", STDOUT_FILENO);
-		// ft_putnbr_fd(siginfo->si_pid, STDOUT_FILENO);
-		// ft_putchar_fd('\n', STDOUT_FILENO);
-		// ft_init();
-		// usleep(50);
-		// kill(g_server.currclient, SIGUSR1);
 		return ;
 	}
-	if (siginfo->si_pid != g_server.currclient)
+	else if (siginfo->si_pid != g_server.currclient)
 	{
-		g_server.nextclient = siginfo->si_pid;
+		if (!g_server.nextclient)
+			g_server.nextclient = siginfo->si_pid;
+		ft_putstr_fd("\n\nnextclient_set!\n\n", STDOUT_FILENO);
 		return ;
 	}
 	g_server.byte += g_server.add * (signo - 30);
