@@ -16,10 +16,7 @@ typedef struct s_server
 {
 	int	nextclient;
 	int	currclient; // 전역 구조체 변수로 만들기
-	int	count;
 	int	byte;
 	int	add;
 }				t_server;
 #endif
-
-//0728 - 전역변수 없애기

@@ -2,6 +2,12 @@
 
 static t_client g_client;
 
+void	ft_send_signal(int client, int signo)
+{
+	usleep(50);
+	kill(client, signo);
+}
+
 void	ft_disconnect(int signo)
 {
 	signo++;
@@ -11,8 +17,9 @@ void	ft_disconnect(int signo)
 
 void	ft_send_number(int signo)
 {
-	usleep(50);
-	kill(g_client.spid, (g_client.byte & 1) + signo); //signo (30)
+	ft_send_signal(g_client.spid, (g_client.byte & 1) + signo); //signo (30)
+	// usleep(50);
+	// kill(g_client.spid, (g_client.byte & 1) + signo); //signo (30)
 	g_client.byte = g_client.byte >> 1;
 	g_client.count++;
 	if (g_client.count < 8)
@@ -46,8 +53,6 @@ int main(int argc, char *argv[])
 		usleep(50);
 		kill(g_client.spid, SIGUSR1); // 처음 연결확인 signal
 	}
-	signal(SIGUSR1, &ft_send_number);
-	signal(SIGUSR2, &ft_disconnect);
 	while (1)
 	{
 		signal(SIGUSR1, &ft_send_number);

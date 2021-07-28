@@ -1,68 +1,65 @@
 #include "./include/server.h"
 
-static t_server g_server;
-
 void	ft_send_signal(int client, int signo)
 {
 	usleep(50);
 	kill(client, signo);
 }
 
-void	ft_init(void)
+t_server	ft_init(t_server g_server)
 {
-	g_server.count = 8;
 	g_server.byte = 0;
 	g_server.add = 1; // 2^0
+	return (g_server);
 }
 
-void	ft_connect(int pid)
+t_server	ft_connect(int pid, t_server g_server)
 {
 	g_server.currclient = pid;
 	ft_putstr_fd("Successfully Connected!\nClient PID : ", STDOUT_FILENO);
 	ft_putnbr_fd(g_server.currclient, STDOUT_FILENO);
 	ft_putchar_fd('\n', STDOUT_FILENO);
-	ft_init();
+	g_server = ft_init(g_server);
 	ft_send_signal(g_server.currclient, SIGUSR1);
+	return (g_server);
 }
-
 
 void	ft_server(int signo, siginfo_t *siginfo, void *none)
 {
+	static t_server g_server;
+
 	none++;
 	if (!g_server.currclient) // Client 처음 연결 signal
 	{
-		ft_connect(siginfo->si_pid);
+		g_server = ft_connect(siginfo->si_pid, g_server);
 		return ;
 	}
-	else if (siginfo->si_pid != g_server.currclient)
+	if (siginfo->si_pid != g_server.currclient)
 	{
 		if (!g_server.nextclient)
 			g_server.nextclient = siginfo->si_pid;
-		ft_putstr_fd("\n\nnextclient_set!\n\n", STDOUT_FILENO);
 		return ;
 	}
 	g_server.byte += g_server.add * (signo - 30);
 	g_server.add *= 2;
-	g_server.count--;
-	if (g_server.count == 0)
+	if (g_server.add == 256)
 	{
 		if (g_server.byte) // NULL이 아니면
 		{
 			ft_putchar_fd(g_server.byte, STDOUT_FILENO);
-			ft_init();
+			g_server = ft_init(g_server);
 		}
 		else
 		{
 			ft_putstr_fd("\nGot all the signals, Disconnected!\n", STDOUT_FILENO);
-			ft_send_signal(g_server.currclient, SIGUSR2);
+			ft_send_signal(g_server.currclient, SIGUSR2); // 종료
 			if (g_server.nextclient)
 			{
-				ft_connect(g_server.nextclient);
+				g_server = ft_connect(g_server.nextclient, g_server);
 				g_server.nextclient = 0;
 			}
 			else
 				g_server.currclient = 0;
-			ft_init();
 			return ;
 		}
 	}

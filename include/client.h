@@ -16,7 +16,7 @@
 
 typedef struct s_client
 {
-	 char *ptr;
+	 char	*ptr;
 	 int	spid;
 	 int	byte; //8bit
 	 int	count;
