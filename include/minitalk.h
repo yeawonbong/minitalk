@@ -16,6 +16,5 @@ typedef struct s_minitalk
 {
 	int	spid;
 	int	cpid;
-	
 }				t_minitalk;
 #endif

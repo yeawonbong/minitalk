@@ -1,69 +1,69 @@
 #include "./include/server.h"
 
-void	ft_send_signal(int client, int signo)
+void	ft_send_signal(int pid, int signo)
 {
 	usleep(50);
-	kill(client, signo);
+	kill(pid, signo);
 }
 
-t_server	ft_init(t_server g_server)
+t_server	ft_init(t_server server)
 {
-	g_server.byte = 0;
-	g_server.add = 1; // 2^0
-	return (g_server);
+	server.byte = 0;
+	server.add = 1; // 2^0
+	return (server);
 }
 
-t_server	ft_connect(int pid, t_server g_server)
+t_server	ft_connect(int pid, t_server server)
 {
-	g_server.currclient = pid;
+	server.currclient = pid;
 	ft_putstr_fd("Successfully Connected!\nClient PID : ", STDOUT_FILENO);
-	ft_putnbr_fd(g_server.currclient, STDOUT_FILENO);
+	ft_putnbr_fd(server.currclient, STDOUT_FILENO);
 	ft_putchar_fd('\n', STDOUT_FILENO);
-	g_server = ft_init(g_server);
-	ft_send_signal(g_server.currclient, SIGUSR1);
-	return (g_server);
+	server = ft_init(server);
+	ft_send_signal(server.currclient, SIGUSR1);
+	return (server);
 }
 
 void	ft_server(int signo, siginfo_t *siginfo, void *none)
 {
-	static t_server g_server;
+	static t_server server;
 
 	none++;
-	if (!g_server.currclient) // Client 처음 연결 signal
+	if (!server.currclient) // Client 처음 연결 signal
 	{
-		g_server = ft_connect(siginfo->si_pid, g_server);
+		server = ft_connect(siginfo->si_pid, server);
 		return ;
 	}
-	if (siginfo->si_pid != g_server.currclient)
+	if (siginfo->si_pid != server.currclient)
 	{
-		if (!g_server.nextclient)
-			g_server.nextclient = siginfo->si_pid;
+		if (!server.nextclient)
+			server.nextclient = siginfo->si_pid;
 		return ;
 	}
-	g_server.byte += g_server.add * (signo - 30);
-	g_server.add *= 2;
-	if (g_server.add == 256)
+	server.byte += server.add * (signo - 30);
+	server.add *= 2;
+	if (server.add == 256)
 	{
-		if (g_server.byte) // NULL이 아니면
+		if (server.byte) // NULL이 아니면
 		{
-			ft_putchar_fd(g_server.byte, STDOUT_FILENO);
-			g_server = ft_init(g_server);
+			ft_putchar_fd(server.byte, STDOUT_FILENO);
+			server = ft_init(server);
 		}
 		else
 		{
 			ft_putstr_fd("\nGot all the signals, Disconnected!\n", STDOUT_FILENO);
-			ft_send_signal(g_server.currclient, SIGUSR2); // 종료
-			if (g_server.nextclient)
+			ft_send_signal(server.currclient, SIGUSR2); // 종료
+			if (server.nextclient)
 			{
-				g_server = ft_connect(g_server.nextclient, g_server);
-				g_server.nextclient = 0;
+				server = ft_connect(server.nextclient, server);
+				server.nextclient = 0;
 			}
 			else
-				g_server.currclient = 0;
+				server.currclient = 0;
 			return ;
 		}
 	}
-	ft_send_signal(g_server.currclient, SIGUSR1);
+	ft_send_signal(server.currclient, SIGUSR1);
 	return ;
 }
 
