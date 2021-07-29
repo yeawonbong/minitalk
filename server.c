@@ -1,16 +1,28 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   server.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ybong <ybong@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/07/29 23:19:49 by ybong             #+#    #+#             */
+/*   Updated: 2021/07/29 23:27:23 by ybong            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "./include/minitalk.h"
 
 t_server	ft_init(t_server server)
 {
 	server.byte = 0;
 	server.add = 1;
+	server.ret = 0;
 	return (server);
 }
 
 t_server	ft_connect(int pid, t_server server)
 {
 	server.currclient = pid;
-	if (server.nextclient)
 	ft_putstr_fd("Successfully Connected!\nClient PID : ", STDOUT_FILENO);
 	ft_putnbr_fd(server.currclient, STDOUT_FILENO);
 	ft_putchar_fd('\n', STDOUT_FILENO);
@@ -64,28 +76,7 @@ void	ft_server(int signo, siginfo_t *siginfo, void *none)
 	{
 		server = ft_end_of_byte(server);
 		if (server.ret)
-		{
-			server.ret = 0;
 			return ;
-		}
-		// if (server.byte)
-		// {
-		// 	ft_putchar_fd(server.byte, STDOUT_FILENO);
-		// 	server = ft_init(server);
-		// }
-		// else
-		// {
-		// 	ft_putstr_fd("\nGot all the signals, Disconnected!\n", STDOUT_FILENO);
-		// 	ft_send_signal(server.currclient, SIGUSR2);
-		// 	if (server.nextclient)
-		// 	{
-		// 		server = ft_connect(server.nextclient, server);
-		// 		server.nextclient = 0;
-		// 	}
-		// 	else
-		// 		server.currclient = 0;
-		// 	return ;
-		// }
 	}
 	ft_send_signal(server.currclient, SIGUSR1);
 	return ;
@@ -106,3 +97,5 @@ int	main(void)
 		sigaction(SIGUSR2, &server, NULL);
 	}
 }
+
+//1. 한글 깨짐 현상 해결
