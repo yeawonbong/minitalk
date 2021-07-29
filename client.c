@@ -1,4 +1,4 @@
-#include "./include/client.h"
+#include "./include/minitalk.h"
 
 static char *g_ptr;
 

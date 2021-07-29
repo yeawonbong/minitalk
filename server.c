@@ -1,4 +1,4 @@
-#include "./include/server.h"
+#include "./include/minitalk.h"
 
 void	ft_send_signal(int pid, int signo)
 {
