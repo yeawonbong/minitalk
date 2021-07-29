@@ -1,12 +1,6 @@
 #include "./include/minitalk.h"
 
-static char *g_ptr;
-
-void	ft_send_signal(int pid, int signo)
-{
-	usleep(50);
-	kill(pid, signo);
-}
+static char	*g_ptr;
 
 void	ft_disconnect(int signo)
 {
@@ -20,16 +14,16 @@ void	ft_send_number(int signo, siginfo_t *siginfo, void *none)
 	static t_client	client;
 
 	none++;
-	ft_send_signal(siginfo->si_pid, (*g_ptr & 1) + signo); //signo (30)
+	ft_send_signal(siginfo->si_pid, (*g_ptr & 1) + signo);
 	*g_ptr = *g_ptr >> 1;
 	client.count++;
 	if (client.count < 8)
 		return ;
-	if (!client.null) //8번째일 때
+	if (!client.null)
 	{
-		if (*(g_ptr + 1)) // 다음 byte
+		if (*(g_ptr + 1))
 			g_ptr++;
-		else //null 보내려고 
+		else
 			client.null = 1;
 		client.count = 0;
 	}
@@ -38,9 +32,9 @@ void	ft_send_number(int signo, siginfo_t *siginfo, void *none)
 	return ;
 }
 
-int main(int argc, char *argv[])
+int	main(int argc, char *argv[])
 {
-	static struct sigaction client;
+	static struct sigaction	client;
 
 	client.sa_sigaction = ft_send_number;
 	client.sa_flags = SA_SIGINFO;
@@ -53,5 +47,5 @@ int main(int argc, char *argv[])
 	ft_send_signal(ft_atoi(argv[1]), SIGUSR1);
 	while (1)
 		sigaction(SIGUSR1, &client, NULL);
-	return(0);
+	return (0);
 }

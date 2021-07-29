@@ -1,4 +1,5 @@
-SRCS = server.c\
+SRCS = minitalk.c\
+server.c\
 client.c
 
 CC = gcc
@@ -13,10 +14,10 @@ CLIENT = client
 all : $(SERVER) $(CLIENT)
 
 $(SERVER) : $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $(SERVER).o $(LIB_DIR)/$(LIB)
+	$(CC) $(CFLAGS) -o $@ minitalk.o $(SERVER).o $(LIB_DIR)/$(LIB)
 
 $(CLIENT) : $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $(CLIENT).o $(LIB_DIR)/$(LIB)
+	$(CC) $(CFLAGS) -o $@ minitalk.o $(CLIENT).o $(LIB_DIR)/$(LIB)
 
 $(OBJS) : $(SRCS)
 	@make -C $(LIB_DIR)

@@ -1,21 +1,16 @@
 #include "./include/minitalk.h"
 
-void	ft_send_signal(int pid, int signo)
-{
-	usleep(50);
-	kill(pid, signo);
-}
-
 t_server	ft_init(t_server server)
 {
 	server.byte = 0;
-	server.add = 1; // 2^0
+	server.add = 1;
 	return (server);
 }
 
 t_server	ft_connect(int pid, t_server server)
 {
 	server.currclient = pid;
+	if (server.nextclient)
 	ft_putstr_fd("Successfully Connected!\nClient PID : ", STDOUT_FILENO);
 	ft_putnbr_fd(server.currclient, STDOUT_FILENO);
 	ft_putchar_fd('\n', STDOUT_FILENO);
@@ -24,12 +19,35 @@ t_server	ft_connect(int pid, t_server server)
 	return (server);
 }
 
+t_server	ft_end_of_byte(t_server server)
+{
+	if (server.byte)
+	{
+		ft_putchar_fd(server.byte, STDOUT_FILENO);
+		server = ft_init(server);
+	}
+	else
+	{
+		ft_putstr_fd("\nGot all the signals, Disconnected!\n", STDOUT_FILENO);
+		ft_send_signal(server.currclient, SIGUSR2);
+		if (server.nextclient)
+		{
+			server = ft_connect(server.nextclient, server);
+			server.nextclient = 0;
+		}
+		else
+			server.currclient = 0;
+		server.ret = 1;
+	}
+	return (server);
+}
+
 void	ft_server(int signo, siginfo_t *siginfo, void *none)
 {
-	static t_server server;
+	static t_server	server;
 
 	none++;
-	if (!server.currclient) // Client 처음 연결 signal
+	if (!server.currclient)
 	{
 		server = ft_connect(siginfo->si_pid, server);
 		return ;
@@ -44,24 +62,30 @@ void	ft_server(int signo, siginfo_t *siginfo, void *none)
 	server.add *= 2;
 	if (server.add == 256)
 	{
-		if (server.byte) // NULL이 아니면
+		server = ft_end_of_byte(server);
+		if (server.ret)
 		{
-			ft_putchar_fd(server.byte, STDOUT_FILENO);
-			server = ft_init(server);
-		}
-		else
-		{
-			ft_putstr_fd("\nGot all the signals, Disconnected!\n", STDOUT_FILENO);
-			ft_send_signal(server.currclient, SIGUSR2); // 종료
-			if (server.nextclient)
-			{
-				server = ft_connect(server.nextclient, server);
-				server.nextclient = 0;
-			}
-			else
-				server.currclient = 0;
+			server.ret = 0;
 			return ;
 		}
+		// if (server.byte)
+		// {
+		// 	ft_putchar_fd(server.byte, STDOUT_FILENO);
+		// 	server = ft_init(server);
+		// }
+		// else
+		// {
+		// 	ft_putstr_fd("\nGot all the signals, Disconnected!\n", STDOUT_FILENO);
+		// 	ft_send_signal(server.currclient, SIGUSR2);
+		// 	if (server.nextclient)
+		// 	{
+		// 		server = ft_connect(server.nextclient, server);
+		// 		server.nextclient = 0;
+		// 	}
+		// 	else
+		// 		server.currclient = 0;
+		// 	return ;
+		// }
 	}
 	ft_send_signal(server.currclient, SIGUSR1);
 	return ;
@@ -69,7 +93,7 @@ void	ft_server(int signo, siginfo_t *siginfo, void *none)
 
 int	main(void)
 {
-	static struct sigaction server;
+	static struct sigaction	server;
 
 	server.sa_sigaction = ft_server;
 	server.sa_flags = SA_SIGINFO;
