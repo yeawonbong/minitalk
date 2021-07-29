@@ -6,7 +6,7 @@
 /*   By: ybong <ybong@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/29 23:27:31 by ybong             #+#    #+#             */
-/*   Updated: 2021/07/29 23:27:32 by ybong            ###   ########.fr       */
+/*   Updated: 2021/07/30 02:08:47 by ybong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,10 @@ void	ft_send_number(int signo, siginfo_t *siginfo, void *none)
 		if (*(g_ptr + 1))
 			g_ptr++;
 		else
+		{
+			*g_ptr = 0;
 			client.null = 1;
+		}
 		client.count = 0;
 	}
 	while (client.null && client.count == 8)
