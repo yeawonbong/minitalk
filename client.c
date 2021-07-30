@@ -6,7 +6,7 @@
 /*   By: ybong <ybong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/29 23:27:31 by ybong             #+#    #+#             */
-/*   Updated: 2021/07/30 11:37:42 by ybong            ###   ########seoul.kr  */
+/*   Updated: 2021/07/30 17:56:47 by ybong            ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,14 +35,14 @@ void	ft_send_number(int signo, siginfo_t *siginfo, void *none)
 	{
 		if (*(g_ptr + 1))
 			g_ptr++;
-		else
+		else // if the next Byte is NULL
 		{
-			*g_ptr = 0;
-			client.null = 1;
+			*g_ptr = 0; // set 0 to send 0 for 8times
+			client.null = 1; // flag of NULL (End of string)
 		}
 		client.count = 0;
 	}
-	while (client.null && client.count == 8)
+	while (client.null && client.count == 8) // after sending NULL, wait for disconnecting signal from server
 		signal(SIGUSR2, &ft_disconnect);
 	return ;
 }

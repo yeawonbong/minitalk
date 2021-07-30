@@ -6,7 +6,7 @@
 /*   By: ybong <ybong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/29 23:19:49 by ybong             #+#    #+#             */
-/*   Updated: 2021/07/30 11:37:48 by ybong            ###   ########seoul.kr  */
+/*   Updated: 2021/07/30 17:56:47 by ybong            ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 t_server	ft_init(t_server server)
 {
 	server.byte = 0;
-	server.add = 1;
+	server.add = 1; // == 2^0
 	server.ret = 0;
 	return (server);
 }
 
-t_server	ft_connect(int pid, t_server server)
+t_server	ft_connect(int pid, t_server server) // connect client
 {
 	server.currclient = pid;
 	ft_putstr_fd("Successfully Connected!\nClient PID : ", STDOUT_FILENO);
@@ -31,25 +31,25 @@ t_server	ft_connect(int pid, t_server server)
 	return (server);
 }
 
-t_server	ft_end_of_byte(t_server server)
+t_server	ft_end_of_byte(t_server server) // when a Byte ends,
 {
-	if (server.byte)
+	if (server.byte) // if the Byte is valid one, putchar.
 	{
 		ft_putchar_fd(server.byte, STDOUT_FILENO);
 		server = ft_init(server);
 	}
-	else
+	else // when the Byte is 'NULL' (== sign of the end of signals to get) -> disconnect client
 	{
 		ft_putstr_fd("\nGot all the signals, Disconnected!\n", STDOUT_FILENO);
 		ft_send_signal(server.currclient, SIGUSR2);
-		if (server.nextclient)
+		if (server.nextclient) // (additional function) if next client exists, connect
 		{
 			server = ft_connect(server.nextclient, server);
 			server.nextclient = 0;
 		}
-		else
+		else // else, empty currclient
 			server.currclient = 0;
-		server.ret = 1;
+		server.ret = 1; // flag of 'return'
 	}
 	return (server);
 }
@@ -59,12 +59,12 @@ void	ft_server(int signo, siginfo_t *siginfo, void *none)
 	static t_server	server;
 
 	none++;
-	if (!server.currclient)
+	if (!server.currclient) 
 	{
 		server = ft_connect(siginfo->si_pid, server);
 		return ;
 	}
-	if (siginfo->si_pid != server.currclient)
+	if (siginfo->si_pid != server.currclient) 
 	{
 		if (!server.nextclient)
 			server.nextclient = siginfo->si_pid;
@@ -72,7 +72,7 @@ void	ft_server(int signo, siginfo_t *siginfo, void *none)
 	}
 	server.byte += server.add * (signo - 30);
 	server.add *= 2;
-	if (server.add == 256)
+	if (server.add == 256) // got 8signals (== 1Byte)
 	{
 		server = ft_end_of_byte(server);
 		if (server.ret)
