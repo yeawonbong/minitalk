@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ybong <ybong@student.42.fr>                +#+  +:+       +#+         #
+#    By: ybong <ybong@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/28 00:12:32 by ybong             #+#    #+#              #
-#    Updated: 2021/07/18 01:53:05 by ybong            ###   ########.fr        #
+#    Updated: 2022/01/26 14:22:14 by ybong            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -70,16 +70,16 @@ OBJ_BONUS = $(SRC_BONUS:.c=.o)
 all : $(NAME)
 
 $(NAME) : $(OBJ)
-	$(AR) $@ $(OBJ)
+	@$(AR) $@ $(OBJ)
 
 %.o:%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 fclean : clean
-	rm -f $(NAME)
+	@rm -f $(NAME)
 
 clean :
-	rm -f $(OBJ)
+	@rm -f $(OBJ)
 
 
 re : fclean all

@@ -5,58 +5,52 @@
 #                                                     +:+ +:+         +:+      #
 #    By: ybong <ybong@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2021/07/30 02:13:31 by ybong             #+#    #+#              #
-#    Updated: 2022/01/26 14:22:43 by ybong            ###   ########.fr        #
+#    Created: 2021/12/10 16:21:43 by ybong             #+#    #+#              #
+#    Updated: 2022/01/22 20:45:01 by ybong            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 SHELL = bash
 
-SRCS = minitalk.c\
-server.c\
-client.c
+NAME = mutantstack
 
-CC = gcc
-CFLAGS = -Wall -Wextra -Werror
-OBJS = $(SRCS:.c=.o)
+SRC = src/main.cpp
 
-LIB = libft.a
-LIB_DIR = ./include/libft
-MINITALK = minitalk.o
-SERVER = server
-CLIENT = client
+OBJ = $(SRC:.cpp=.o)
+OBJDIR = obj/
 
-all : $(SERVER) $(CLIENT)
+CXX = clang++
+CXXFLAGES = -Wall -Wextra -Werror -std=c++98
 
-$(SERVER) : $(OBJS)
+all : $(NAME)
+
+$(NAME) : $(OBJ) $(OBJDIR)
 	@echo -n "Assembling [$@]... "
-	@$(CC) $(CFLAGS) -o $@ $(MINITALK) $(SERVER).o $(LIB_DIR)/$(LIB)
+	@$(CXX) $(CXXFLAGES) -o $@ $(OBJ)
+	@mv src/*.o $(OBJDIR)
 	@echo "✔"
 
-$(CLIENT) : $(OBJS)
-	@echo -n "Assembling [$@]... "
-	@$(CC) $(CFLAGS) -o $@ $(MINITALK) $(CLIENT).o $(LIB_DIR)/$(LIB)
-	@echo "✔"
+$(OBJDIR) :
+	@mkdir $@
 
-$(OBJS) : $(SRCS)
+$(OBJ) : $(SRC)
 	@echo -n "Compiling... "
-	@make -C $(LIB_DIR)
-	@$(CC) $(CFLAGS) -c $(SRCS)
+	@$(CXX) $(CXXFLAGES) -c $(SRC)
+	@mv *.o src
 	@echo "✔"
-
 
 fclean : clean
 	@echo -n "Cleaning all... "
-	@make fclean -C $(LIB_DIR)
-	@rm -f $(SERVER) $(CLIENT)
+	@rm -f $(NAME)
 	@echo "✔"
 
 clean :
 	@echo -n "Cleaning obj files... "
-	@make clean -C $(LIB_DIR)
-	@rm -rf $(OBJS)
+	@rm -rf $(OBJDIR)
+	@rm -f $(OBJ)
+	@rm -f *.o
+	@rm -f *_shrubbery
 	@echo "✔"
 
 re : fclean all
 
-.PHONY : all clean fclean re
